@@ -32,8 +32,9 @@ int MiniMax::eval_ctx(
     /* === Terminal / leaf checks === */
 
     // [ Hackathon TODO 3-1 ]
-    // return the score for a winning terminal state
-    // Hint: prefer faster wins by using ply.
+    if(state->game_state == WIN){
+        return P_MAX - ply;
+    }
 
     if(state->game_state == DRAW){
         return 0;
@@ -59,20 +60,20 @@ int MiniMax::eval_ctx(
 
     for(auto& action : state->legal_actions){
         // [ Hackathon TODO 3-2 ]
-        // create the child state after applying action
+        State* next = state->next_state(action);
 
         bool same = next->same_player_as_parent();
 
         // [Hackathon TODO 3-3]
-        // search the child one level deeper
+        int raw = eval_ctx(next, depth - 1, history, ply + 1, ctx, p);
 
         // [Hackathon TODO 3-4]
-        // convert raw to the current player's perspective.
+        int score = same ? raw : -raw;
 
         delete next;
 
         // [ Hackathon TODO 3-5 ]
-        // update best_score if this child is better.
+        if(score > best_score) best_score = score;
 
     }
 
@@ -107,24 +108,30 @@ SearchResult MiniMax::search(
     int total_moves = (int)state->legal_actions.size();
 
     for(auto& action : state->legal_actions){
-        /* [ Hackathon TODO 4-1 ]
-         * search this move like TODO 3, but starting from the root */
+        // [ Hackathon TODO 4-1 ]
+        State* next = state->next_state(action);
+        bool same = next->same_player_as_parent();
+        int raw = eval_ctx(next, depth - 1, history, 1, ctx, p);
+        int score = same ? raw : -raw;
+        delete next;
 
             if(score > best_score){
                 // [ Hackathon TODO 4-2 ]
-                // keep this move if it is the best so far
+                best_score = score;
+                result.best_move = action;
 
                 if(p.report_partial && ctx.on_root_update){
                    ctx.on_root_update({result.best_move, best_score, depth, move_index + 1, total_moves});
                 }
-            }  
+            }
         move_index++;
     }
 
     // [ Hackathon TODO 4-3 ]
-    // update result and return
-
-        return result;
+    result.score = best_score;
+    result.nodes = ctx.nodes;
+    result.seldepth = ctx.seldepth;
+    return result;
 } 
 
 
