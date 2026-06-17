@@ -246,7 +246,7 @@ ParamMap MiniMax::default_params(){
     return {
         {"UseKPEval", "true"},
         {"UseEvalMobility", "true"},
-        {"ReportPartial", "true"},
+        {"ReportPartial", "false"},
     };
 }
 
@@ -254,6 +254,6 @@ std::vector<ParamDef> MiniMax::param_defs(){
     return {
         {"UseKPEval", ParamDef::CHECK, "true"},
         {"UseEvalMobility", ParamDef::CHECK, "true"},
-        {"ReportPartial", ParamDef::CHECK, "true"},
+        {"ReportPartial", ParamDef::CHECK, "false"},
     };
 }
