@@ -18,13 +18,23 @@ struct MMParams {
 
 class MiniMax{
 public:
+    static int qsearch(
+        State* state,
+        int alpha,
+        int beta,
+        int ply,
+        SearchContext& ctx,
+        const MMParams& p
+    );
     static int eval_ctx(
         State *state,
         int depth,
         GameHistory& history,
         int ply,
         SearchContext& ctx,
-        const MMParams& p
+        const MMParams& p,
+        int alpha = M_MAX,
+        int beta  = P_MAX
     );
     static SearchResult search(
         State *state,
